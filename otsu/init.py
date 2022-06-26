@@ -54,30 +54,30 @@ for i in range(20): # N (1 AE + 1 C)
 
 L=256 # 1 AE
 
-nexp=1 # 1 AE
+nexp=11 # 1 AE
 
-Kmax=4 # 1 AE
+Kmax=5 # 1 AE
     
 # loop por imagens - test
 
-for j in range(nImg): # 1 AI + N(1 AE, 1 C)
+for j in range(nImg): # 1 AI + 4(1 AE, 1 C)
     
     print("n   K   inTime (Std) itTime (Std) best_thresholds")
-    x=ResX[j] # 1 AE, 1 AI
-    y=ResY[j] # 1 AE, 1 AI
-    N=x*y # 1 AE, 2 AI, 1 O
+    x=ResX[j] # 4(1 AE, 1 AI)
+    y=ResY[j] # 4(1 AE, 1 AI)
+    N=x*y # 4(1 AE, 2 AI, 1 O)
 
-    for K in range(2,Kmax+1): # 1 AI + N(1 AE, 1 C)
+    for K in range(2,Kmax+1): # 1 AI + 5(1 AE, 1 C)
 
         InTime=[] # 1 AE
         ItTime=[] # 1 AE
 
-        for i in range(nexp): # 1 AI, N (1 AE, 1 C)
+        for i in range(nexp): # 1 AI, 11(1 AE, 1 C)
 
-            inittime,itertime, iterations, thresholds = segment(K,L,Y[j]) # 4 AI, 4 AE
+            inittime,itertime, iterations, thresholds = segment(K,L,Y[j]) # 11(4 AI, 4 AE)
 
-            InTime.append(inittime) # 1 AI
-            ItTime.append(itertime) # 1 AI
+            InTime.append(inittime) # 11 AI
+            ItTime.append(itertime) # 11 AI
 
         print(N,K,np.mean(InTime),'(',np.std(InTime),')',np.mean(ItTime),'(',np.std(ItTime),')',thresholds)
 
@@ -88,8 +88,8 @@ for j in range(nImg): # 1 AI + N(1 AE, 1 C)
         # classificando pixels
 
         Mask=[] # 1 AE
-        for i in range(N): # 1 AI, N(1 AE, 1 C)
-            for k in range(K): # 1 AI, N (1 AE, 1 C)
-                if Y[j][i]>f[k] and Y[j][i]<=f[k+1]: # 10 AI, 2 C, 1 O
+        for i in range(N): # 1 AI, N (1 AE, 1 C)
+            for k in range(K): # N (1 AI, K (1AE, 1C))
+                if Y[j][i]>f[k] and Y[j][i]<=f[k+1]: # NK(4AI, 1O, 3C)
                     Mask.append(colors.hex2color(my_color[k])) # 2 AI
                     break
